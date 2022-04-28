@@ -1,0 +1,25 @@
+{
+  "name": "pepper",
+  "version": "1.0.0",
+  "description": "Python driven static site generator",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/marzukia/pepper.git"
+  },
+  "keywords": [
+    "static",
+    "site",
+    "generator",
+    "python"
+  ],
+  "author": "Andryo Marzuki",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/marzukia/pepper/issues"
+  },
+  "homepage": "https://github.com/marzukia/pepper#readme"
+}
