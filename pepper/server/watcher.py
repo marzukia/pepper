@@ -1,9 +1,12 @@
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
 
+import os
 from queue import Queue
 import time
 import threading
+
+from pepper.builder.functions import build_site
 
 
 class SourceFileHandler(FileSystemEventHandler):
@@ -39,7 +42,7 @@ def run_watcher():
         while True:
             while not handler.event_q.empty():
                 event, ts = handler.event_q.get()
-                print(event.src_path)
+                build_site(os.environ["app_name"])
             time.sleep(1)
     except KeyboardInterrupt:
         observer.stop()
