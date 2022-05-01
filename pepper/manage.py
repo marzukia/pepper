@@ -4,6 +4,7 @@ import os
 
 from pepper.builder.functions import build_site, create_new_site
 from pepper.server.watcher import run_watcher
+from pepper.server.runner import app
 
 
 parser = argparse.ArgumentParser(
@@ -32,5 +33,5 @@ if command == "server":
     watcher_thread = threading.Thread(target=run_watcher)
     watcher_thread.start()
     os.environ["app_name"] = arg
-    # app.run(debug=True)
+    app.run(debug=True)
     watcher_thread.join()

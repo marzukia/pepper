@@ -1,12 +1,12 @@
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
 
+from pepper.builder.functions import build_site
+
 import os
 from queue import Queue
-import time
 import threading
-
-from pepper.builder.functions import build_site
+import time
 
 
 class SourceFileHandler(FileSystemEventHandler):
@@ -16,9 +16,11 @@ class SourceFileHandler(FileSystemEventHandler):
         self.dummy_thread = None
 
     def on_any_event(self, event):
-        print(event)
         if not event.is_directory and event.src_path.endswith(self.pattern):
-            self.event_q.put((event, time.time()))
+            if "build" not in event.src_path:
+                print(event)
+                build_site(os.environ["app_name"])
+                self.event_q.put((event, time.time()))
 
     def start(self):
         self.dummy_thread = threading.Thread(target=self._process)
@@ -36,13 +38,12 @@ handler.start()
 
 def run_watcher():
     observer = Observer()
-    observer.schedule(handler, "example/", recursive=True)
+    observer.schedule(handler, "example/content/", recursive=True)
     observer.start()
     try:
         while True:
             while not handler.event_q.empty():
-                event, ts = handler.event_q.get()
-                build_site(os.environ["app_name"])
+                pass
             time.sleep(1)
     except KeyboardInterrupt:
         observer.stop()
