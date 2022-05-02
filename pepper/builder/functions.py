@@ -1,15 +1,23 @@
 import shutil
+
+from jinja2 import Environment, FileSystemLoader
 from pepper.markdown.classes import MarkdownDirectory, MarkdownFile
 from pepper.markdown.functions import map_directory_markdown_files
 
 from inspect import getsourcefile
 import os
 
-from typing import List, Union, Dict
+from typing import Any, List, Union, Dict
+
+cwd = os.getcwd()
+app_name = os.environ["app_name"]
+template_dir = os.path.join(cwd, app_name, "templates", "default")
+env = Environment(loader=FileSystemLoader(template_dir))
 
 
 def build_content(
-    content: List[Union[Dict[MarkdownDirectory, MarkdownFile], MarkdownFile]]
+    content: List[Union[Dict[MarkdownDirectory, MarkdownFile], MarkdownFile]],
+    context: Dict[str, Any],
 ) -> None:
     if type(content) != MarkdownFile:
         key = list(content.keys()).pop()
@@ -32,14 +40,16 @@ def build_content(
                 else:
                     filepath = filepath.replace(".md", ".html")
                     with open(filepath, "w") as target:
-                        target.write(content.html)
+                        template = env.get_template("index.html")
+                        target.write(template.render(**context))
 
 
 def build_site(target_site: str) -> None:
     print("Content change, rebuilding site...")
     content = map_directory_markdown_files(f"{target_site}/content")
     for c in content:
-        build_content(c)
+        context = {"content": c.html, "meta": c.meta, "tree": content}
+        build_content(c, context)
 
 
 def create_new_site(site_dir: str) -> None:

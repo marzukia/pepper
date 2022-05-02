@@ -5,5 +5,4 @@ pyyaml
 sphinx==3.0.8
 sphinx-rtd-theme
 structlog
-flask
-watchdog
+livereload

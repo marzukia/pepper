@@ -1,0 +1,9 @@
+<div class="Sidebar">
+    <div class="sidebar-content">
+        <ul>
+            {% for item in tree %}
+            <li><a href="{{item.filename}}">{{item.meta.title}}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>

@@ -17,9 +17,11 @@ class MarkdownFile:
     meta: MarkdownFileMeta
     html: str
     filepath: str
+    filename: str
 
     def __init__(self, filepath: str):
         self.filepath = filepath
+        self.filename = filepath.split("/")[-1].replace(".md", ".html")
         self.meta, self.html = self.parse_file()
 
     def load_meta(self, md_str: str) -> MarkdownFileMeta:

@@ -1,11 +1,8 @@
 import argparse
-import threading
 import os
+from livereload import Server, shell
 
 from pepper.builder.functions import build_site, create_new_site
-from pepper.server.watcher import run_watcher
-from pepper.server.runner import app
-
 
 parser = argparse.ArgumentParser(
     description="Pepper static site generator command line utility tool",
@@ -30,8 +27,8 @@ if command == "build":
     build_site(arg)
 
 if command == "server":
-    watcher_thread = threading.Thread(target=run_watcher)
-    watcher_thread.start()
     os.environ["app_name"] = arg
-    app.run(debug=True)
-    watcher_thread.join()
+    server = Server()
+    server.watch("example/content/*.md", shell("python -m pepper.manage build example"))
+    server.watch("example/templates/", shell("python -m pepper.manage build example"))
+    server.serve(root="example/build")
