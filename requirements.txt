@@ -2,7 +2,7 @@ mistune
 jinja2
 pytest
 pyyaml
-sphinx==3.0.8
+sphinx
 sphinx-rtd-theme
 structlog
 livereload
