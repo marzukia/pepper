@@ -29,10 +29,14 @@ if __name__ == "__main__":
         create_new_site(arg)
 
     if command == "build":
+        build_path = os.path.join(arg, "build")
+        if os.path.isdir(build_path):
+            shutil.rmtree(build_path)
         build_site(arg)
 
     if command == "server":
         server = Server()
+        server.watch(f"{arg}/*.toml", shell(f"python -m pepper.manage build {arg}"))
         server.watch(f"{arg}/content/", shell(f"python -m pepper.manage build {arg}"))
         server.watch(f"{arg}/static/", shell(f"python -m pepper.manage build {arg}"))
         server.watch(f"{arg}/templates/", shell(f"python -m pepper.manage build {arg}"))
@@ -41,6 +45,13 @@ if __name__ == "__main__":
     if command == "dev-server":
         server = Server()
         current_dir = os.path.abspath(os.path.dirname(__file__))
+
+        def copy_html():
+            shutil.copytree(
+                os.path.join("pepper", "builder", "default", "layout"),
+                os.path.join(arg, "templates", "default", "layout"),
+                dirs_exist_ok=True,
+            )
 
         def compile_and_copy_css():
             compile_default_sass()
@@ -51,6 +62,7 @@ if __name__ == "__main__":
             )
 
         server.watch("pepper/builder/default/static/scss/*.scss", compile_and_copy_css)
+        server.watch("pepper/builder/default/layout/*.html", copy_html)
+        server.watch(f"{arg}/*.toml", shell(f"python -m pepper.manage build {arg}"))
         server.watch(f"{arg}/content/", shell(f"python -m pepper.manage build {arg}"))
-        server.watch(f"{arg}/templates/", shell(f"python -m pepper.manage build {arg}"))
         server.serve(root=f"{arg}/build")

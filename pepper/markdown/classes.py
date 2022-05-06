@@ -1,4 +1,4 @@
-from typing import Tuple, List, Union
+from typing import Any, Tuple, List, Union
 import re
 import yaml
 import mistune
@@ -61,18 +61,21 @@ class BuildContext:
     parent: MarkdownDirectory = None
     meta: MarkdownFileMeta
     tree: List[Union[TreeItem, List[TreeItem]]] = None
+    config: Any = None
 
     def __init__(
         self,
         file: MarkdownFileMeta,
         parent: MarkdownDirectory,
         tree: List[Union[TreeItem, List[TreeItem]]],
+        config: Any,
         **kwargs
     ):
         self.html = file.html
         self.meta = file.meta
         self.parent = parent
         self.tree = tree
+        self.config = config
 
         for key, value in kwargs.items():
             setattr(self, key, value)

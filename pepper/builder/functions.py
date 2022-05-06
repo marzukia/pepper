@@ -1,6 +1,7 @@
 import shutil
 
 from jinja2 import Environment, FileSystemLoader
+import toml
 from pepper.markdown.classes import (
     BuildContext,
     MarkdownDirectory,
@@ -20,6 +21,13 @@ ContentMap = NewType(
     "ContentMap", List[Union[Dict[MarkdownDirectory, MarkdownFile], MarkdownFile]]
 )
 TreeMap = NewType("TreeMap", List[Union[TreeItem, List[TreeItem]]])
+
+
+def load_config(target_site: str):
+    config_path = os.path.join(target_site, "config.toml")
+    with open(config_path, "r") as config_file:
+        config = toml.loads(config_file.read())
+    return config
 
 
 def build_content(
@@ -61,21 +69,21 @@ def build_page(
     file: MarkdownFile,
     parent: MarkdownDirectory = None,
     tree: TreeMap = None,
+    config: Any = None,
 ) -> None:
-    context = BuildContext(file=file, parent=parent, tree=tree)
+    context = BuildContext(file=file, parent=parent, tree=tree, config=config)
     build_content(content=file, context=context)
 
 
 def build_nested_directory(
-    folder: dict,
-    tree: TreeMap = None,
+    folder: dict, tree: TreeMap = None, config: Any = None
 ) -> None:
     for directory, children in folder.items():
         for child in children:
             if type(child) == dict:
-                build_nested_directory(folder=child, tree=tree)
+                build_nested_directory(folder=child, tree=tree, config=config)
             else:
-                build_page(file=child, parent=directory, tree=tree)
+                build_page(file=child, parent=directory, tree=tree, config=config)
 
 
 def build_tree(content: ContentMap):
@@ -106,11 +114,13 @@ def build_site(target_site: str) -> None:
     content = map_directory_markdown_files(content_path)
     tree = build_tree(content)
 
+    config = load_config(target_site)
+
     for item in content:
         if type(item) == dict:
-            build_nested_directory(folder=item, tree=tree)
+            build_nested_directory(folder=item, tree=tree, config=config)
         else:
-            build_page(file=item, tree=tree)
+            build_page(file=item, tree=tree, config=config)
 
     static_srcs = [
         os.path.join(target_site, "templates", "default", "static"),
