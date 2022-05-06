@@ -29,6 +29,7 @@ if __name__ == "__main__":
         create_new_site(arg)
 
     if command == "build":
+        create_new_site(arg)
         build_path = os.path.join(arg, "build")
         if os.path.isdir(build_path):
             shutil.rmtree(build_path)

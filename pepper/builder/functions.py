@@ -27,6 +27,7 @@ def load_config(target_site: str):
     config_path = os.path.join(target_site, "config.toml")
     with open(config_path, "r") as config_file:
         config = toml.loads(config_file.read())
+        config["app_name"] = target_site
     return config
 
 
@@ -34,9 +35,8 @@ def build_content(
     content: ContentMap,
     context: Dict[str, Any],
 ) -> None:
-    cwd = os.getcwd()
-    app_name = os.environ["app_name"]
-    template_dir = os.path.join(cwd, app_name, "templates", "default")
+    app_name = context.config.get("app_name")
+    template_dir = os.path.join(app_name, "templates", "default")
     env = Environment(loader=FileSystemLoader(template_dir))
 
     if type(content) != MarkdownFile:
