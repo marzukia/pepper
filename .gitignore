@@ -6,4 +6,4 @@ docs/build
 example/
 *.pyc
 __pycache__/
-docs/
+blog/

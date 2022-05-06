@@ -97,7 +97,10 @@ def build_tree(content: ContentMap):
 
 
 def build_site(target_site: str) -> None:
-    print("Content change, rebuilding site...")
+    build_path = os.path.join(target_site, "build")
+    if os.path.isdir(build_path):
+        shutil.rmtree(build_path)
+
     content_path = os.path.join(target_site, "content")
     content = map_directory_markdown_files(content_path)
     tree = build_tree(content)
@@ -108,13 +111,14 @@ def build_site(target_site: str) -> None:
         else:
             build_page(file=item, tree=tree)
 
-    static_src = os.path.join(target_site, "templates", "default", "static")
-    static_dst = os.path.join(target_site, "build", "static")
-    shutil.rmtree(static_dst)
-    shutil.copytree(
-        static_src,
-        static_dst,
-    )
+    static_srcs = [
+        os.path.join(target_site, "templates", "default", "static"),
+        os.path.join(target_site, "static"),
+    ]
+    static_dst = os.path.join(target_site, "build")
+
+    for static_src in static_srcs:
+        shutil.copytree(static_src, static_dst, dirs_exist_ok=True)
 
 
 def create_new_site(site_dir: str) -> None:
