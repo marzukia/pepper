@@ -1,8 +1,9 @@
 import argparse
+import shutil
 from livereload import Server, shell
 import os
 
-from pepper.builder.functions import build_site, create_new_site
+from pepper.builder.functions import build_site, compile_default_sass, create_new_site
 
 parser = argparse.ArgumentParser(
     description="Pepper static site generator command line utility tool",
@@ -34,5 +35,22 @@ if __name__ == "__main__":
         server = Server()
         server.watch(f"{arg}/content/", shell(f"python -m pepper.manage build {arg}"))
         server.watch(f"{arg}/static/", shell(f"python -m pepper.manage build {arg}"))
+        server.watch(f"{arg}/templates/", shell(f"python -m pepper.manage build {arg}"))
+        server.serve(root=f"{arg}/build")
+
+    if command == "dev-server":
+        server = Server()
+        current_dir = os.path.abspath(os.path.dirname(__file__))
+
+        def compile_and_copy_css():
+            compile_default_sass()
+            shutil.copytree(
+                os.path.join("pepper", "builder", "default", "static", "css"),
+                os.path.join(arg, "build", "css"),
+                dirs_exist_ok=True,
+            )
+
+        server.watch("pepper/builder/default/static/scss/*.scss", compile_and_copy_css)
+        server.watch(f"{arg}/content/", shell(f"python -m pepper.manage build {arg}"))
         server.watch(f"{arg}/templates/", shell(f"python -m pepper.manage build {arg}"))
         server.serve(root=f"{arg}/build")

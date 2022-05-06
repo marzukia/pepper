@@ -1,65 +1,41 @@
-html {
-    height: 100%;
-}
-
+html,
 body {
-    font-family: sans-serif;
-    display: grid;
-    margin: 0;
-    padding: 0;
-    background-color: #eee;
-    min-height: 100%;
-}
+  padding: 0;
+  margin: 0;
+  height: 100%;
+  display: inline; }
 
 body,
 code,
 pre {
-    font-size: 14px;
-}
-
-.Wrapper {
-    display: grid;
-    grid-template-columns: 400px auto;
-}
-
-.Sidebar {
-    grid-row: 1;
-    background-color: #ccc;
-    border-right: 1px solid #aaa;
-}
-
-.Sidebar .sidebar-content {
-    position: fixed;
-    top: calc(100px + 1em);
-    padding: 1em;
-    max-width: calc(400px - 2em);
-}
-
-.Footer {
-    background-color: red;
-    position: sticky;
-    height: 100px;
-}
-
-.Header {
-    background-color: blue;
-    height: 100px;
-    position: fixed;
-    width: 100%;
-}
-
-.Content {
-    padding: 3em;
-    max-width: 900px;
-    background-color: white;
-    margin: 2em;
-    margin-top: calc(100px + 2em);
-}
-
-.Sidebar .sidebar-content li {
-    margin-bottom: 0.25em;
-}
+  font-size: 14px; }
 
 img {
-    width: 100%;
-}
+  width: 100%; }
+
+.Wrapper {
+  padding-top: 100px;
+  display: grid;
+  grid-template-columns: 1fr 2fr; }
+
+.Content {
+  padding: 2em 3em;
+  max-width: 900px;
+  background-color: white; }
+
+.Header {
+  background-color: #477160;
+  height: 100px;
+  width: 100%;
+  position: fixed; }
+
+.Sidebar {
+  background-color: #ccc;
+  border-right: 1px solid #444; }
+  .Sidebar .sidebar-content {
+    position: fixed; }
+
+.Footer {
+  background-color: #477160;
+  position: sticky;
+  height: 100px; }

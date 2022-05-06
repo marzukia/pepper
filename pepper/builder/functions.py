@@ -11,6 +11,7 @@ from pepper.markdown.functions import map_directory_markdown_files
 
 from inspect import getsourcefile
 import os
+import sass
 
 from typing import Any, List, NewType, Union, Dict
 
@@ -134,4 +135,26 @@ def create_new_site(site_dir: str) -> None:
 
     source_path = os.path.abspath(getsourcefile(lambda: 0))
     default_dir = os.path.join(os.path.dirname(source_path), "default")
-    shutil.copytree(default_dir, os.path.join(site_dir, "templates", "default"))
+    shutil.copytree(
+        default_dir, os.path.join(site_dir, "templates", "default"), dirs_exist_ok=True
+    )
+
+
+def compile_default_sass():
+    current_dir = os.path.abspath(os.path.dirname(__file__))
+    default_theme_path = os.path.join(current_dir, "default")
+    sass_path = os.path.join(default_theme_path, "static", "scss")
+    sass_files = os.listdir(sass_path)
+    css_path = os.path.join(default_theme_path, "static", "css", "styles.css")
+
+    sass_string = ""
+    for sass_file in sass_files:
+        sass_file_path = os.path.join(sass_path, sass_file)
+        with open(sass_file_path, "r") as sass_file:
+            data = sass_file.read()
+            sass_string += "\n" + data + "\n"
+
+    compiled_sass = sass.compile(string=sass_string)
+
+    with open(css_path, "w") as css_file:
+        css_file.write(compiled_sass)
