@@ -1,3 +1,61 @@
+html {
+    height: 100%;
+}
+
 body {
     font-family: sans-serif;
+    display: grid;
+    margin: 0;
+    padding: 0;
+    background-color: #eee;
+    min-height: 100%;
+}
+
+body,
+code,
+pre {
+    font-size: 14px;
+}
+
+.Wrapper {
+    display: grid;
+    grid-template-columns: 400px auto;
+}
+
+.Sidebar {
+    grid-row: 1;
+    background-color: #ccc;
+    border-right: 1px solid #aaa;
+}
+
+.Sidebar .sidebar-content {
+    position: fixed;
+    top: calc(100px + 1em);
+    padding: 1em;
+    max-width: calc(400px - 2em);
+}
+
+.Footer {
+    background-color: red;
+    position: sticky;
+    height: 100px;
+}
+
+.Header {
+    background-color: blue;
+    height: 100px;
+    position: fixed;
+    width: 100%;
+}
+
+.Content {
+    padding: 3em;
+    max-width: 900px;
+    background-color: white;
+    margin: 2em;
+    margin-top: calc(100px + 2em);
+}
+
+.Sidebar .sidebar-content li {
+    margin-bottom: 0.25em;
 }
