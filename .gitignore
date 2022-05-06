@@ -4,3 +4,6 @@ example/build/
 .DS_Store
 docs/build
 example/
+*.pyc
+__pycache__/
+docs/

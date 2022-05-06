@@ -14,7 +14,7 @@ def map_directory_markdown_files(
             filepath = MarkdownDirectory(path)
             tree.append({filepath: map_directory_markdown_files(path)})
         else:
-            if filepath != "_index.md" and ".md" in filepath:
+            if ".md" in filepath:
                 file = MarkdownFile(path)
                 tree.append(file)
     return tree

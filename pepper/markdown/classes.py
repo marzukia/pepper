@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Tuple, List, Union
 import re
 import yaml
 import mistune
@@ -21,7 +21,8 @@ class MarkdownFile:
 
     def __init__(self, filepath: str):
         self.filepath = filepath
-        self.filename = filepath.split("/")[-1].replace(".md", ".html")
+        self.filename = "/".join(filepath.split("/")[2:]).replace(".md", ".html")
+        self.filename = "/" + self.filename
         self.meta, self.html = self.parse_file()
 
     def load_meta(self, md_str: str) -> MarkdownFileMeta:
@@ -47,3 +48,34 @@ class MarkdownDirectory(MarkdownFile):
     def parse_file(self) -> Tuple[MarkdownFileMeta, str]:
         self.filepath += "/_index.md"
         return super().parse_file()
+
+
+class TreeItem:
+    def __init__(self, filepath: str, title: str):
+        self.filepath = filepath
+        self.title = title
+
+
+class BuildContext:
+    html: str
+    parent: MarkdownDirectory = None
+    meta: MarkdownFileMeta
+    tree: List[Union[TreeItem, List[TreeItem]]] = None
+
+    def __init__(
+        self,
+        file: MarkdownFileMeta,
+        parent: MarkdownDirectory,
+        tree: List[Union[TreeItem, List[TreeItem]]],
+        **kwargs
+    ):
+        self.html = file.html
+        self.meta = file.meta
+        self.parent = parent
+        self.tree = tree
+
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+
+    def as_dict(self):
+        return self.__dict__

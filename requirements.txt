@@ -6,3 +6,5 @@ sphinx
 sphinx-rtd-theme
 structlog
 livereload
+black
+flake8
